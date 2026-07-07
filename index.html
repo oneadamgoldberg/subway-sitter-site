@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subway Sitter — Sit anywhere. Touch nothing.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F6F0E6; --paper:#FCFAF5; --card:#FFFFFF;
+    --sage:#8FA995; --sage-dk:#6E8B78; --clay:#C48A64; --clay-soft:#E7CDBB;
+    --ink:#3B3D35; --muted:#8B8577; --line:#E8DFD1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif;font-weight:500;letter-spacing:-.01em;line-height:1.12}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 26px}
+  .btn{display:inline-block;background:var(--sage-dk);color:#fff;font-weight:600;font-size:15px;padding:15px 30px;border-radius:40px;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(110,139,120,.32);background:#5f7c69}
+  .eyebrow{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--sage-dk);font-weight:600}
+  .route{display:inline-flex;align-items:center;gap:0;margin:0 10px;vertical-align:middle}
+
+  nav{position:sticky;top:0;z-index:40;background:rgba(246,240,230,.86);backdrop-filter:blur(9px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .logo{font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--ink);letter-spacing:-.01em}
+  .navlinks{display:flex;gap:30px;align-items:center}
+  .navlinks a{color:var(--muted);font-size:14.5px;font-weight:500}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks .btn{color:#fff}
+  @media(max-width:720px){.navlinks a:not(.btn){display:none}}
+
+  /* HERO */
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;padding:76px 26px 84px}
+  .hero h1{font-size:64px;color:var(--ink);margin:20px 0 22px}
+  .hero p.sub{font-size:19px;color:var(--muted);max-width:460px;margin-bottom:30px}
+  .hero .micro{margin-top:20px;color:var(--muted);font-size:13.5px}
+  .hero .micro b{color:var(--ink);font-weight:600}
+  .hero-img{border-radius:22px;overflow:hidden;box-shadow:0 30px 60px rgba(59,61,53,.16)}
+  .hero-img img{width:100%;display:block}
+  @media(max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:34px;text-align:center;padding-top:52px}.hero h1{font-size:46px}.hero p.sub{margin-left:auto;margin-right:auto}.hero-img{max-width:520px;margin:0 auto}}
+
+  .rline{display:block;margin:0 auto}
+
+  /* RESERVE / fake-door */
+  .reserve{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .reserve .wrap{padding:70px 26px}
+  .rcard{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:44px 40px;text-align:center;box-shadow:0 20px 50px rgba(59,61,53,.07)}
+  .rcard .pill{display:inline-block;background:var(--clay-soft);color:#8a5a3c;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:18px}
+  .rcard h2{font-size:34px;margin-bottom:10px}
+  .rcard .price{font-family:'Fraunces',serif;font-size:20px;color:var(--sage-dk);margin-bottom:6px}
+  .rcard p.note{color:var(--muted);font-size:15px;margin-bottom:24px}
+  form.reserve-form{display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto}
+  form.reserve-form input,form.reserve-form select{padding:15px 18px;border-radius:14px;border:1px solid var(--line);font-size:15px;font-family:inherit;color:var(--ink);background:#fff;outline:none}
+  form.reserve-form input:focus,form.reserve-form select:focus{border-color:var(--sage)}
+  form.reserve-form .btn{margin-top:4px}
+  .reserve-fine{color:var(--muted);font-size:12.5px;margin-top:14px}
+  .reserve-thanks{display:none;padding:20px 0}
+  .reserve-thanks h3{font-size:26px;color:var(--sage-dk);margin-bottom:8px}
+  .reserve-thanks p{color:var(--muted)}
+
+  section.pad{padding:92px 0}
+  .center{text-align:center}
+  h2.title{font-size:40px;color:var(--ink);margin-bottom:14px}
+  p.lead{color:var(--muted);font-size:18px;max-width:600px;margin:0 auto 54px}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:900px;margin:0 auto}
+  .step{text-align:center;padding:12px}
+  .step .n{font-family:'Fraunces',serif;font-size:30px;color:var(--sage);width:66px;height:66px;border:1.5px solid var(--sage);border-radius:50%;display:grid;place-items:center;margin:0 auto 16px}
+  .step h3{font-size:21px;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:14.5px}
+  @media(max-width:720px){.steps{grid-template-columns:1fr}}
+
+  /* SPLIT (why) */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  .split img{width:100%;border-radius:20px;box-shadow:0 24px 50px rgba(59,61,53,.14)}
+  .split h2{font-size:36px;margin-bottom:18px}
+  .feat{display:flex;gap:14px;margin-bottom:18px}
+  .feat .dot{flex:0 0 10px;height:10px;border-radius:50%;background:var(--sage);margin-top:9px}
+  .feat h4{font-size:17px;margin-bottom:2px;font-family:'Inter',sans-serif;font-weight:600}
+  .feat p{color:var(--muted);font-size:14.5px}
+  @media(max-width:820px){.split{grid-template-columns:1fr;gap:32px}}
+
+  /* VALUES strip */
+  .values{background:var(--sage);color:#fff}
+  .values .wrap{display:flex;justify-content:center;gap:14px 40px;flex-wrap:wrap;padding:30px 26px;font-size:14.5px;letter-spacing:.02em}
+  .values span{opacity:.96}
+
+  /* FAQ */
+  .faq{max-width:760px;margin:0 auto}
+  .faq details{border-bottom:1px solid var(--line);padding:20px 4px}
+  .faq summary{font-family:'Fraunces',serif;font-size:19px;cursor:pointer;list-style:none;color:var(--ink)}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq p{color:var(--muted);font-size:15px;margin-top:10px}
+
+  footer{background:var(--paper);border-top:1px solid var(--line);padding:44px 0;color:var(--muted);font-size:14px}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;align-items:center}
+  .note{max-width:1120px;margin:16px auto 0;padding:0 26px;font-size:11.5px;color:#b3ab9c;text-align:center}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo" href="#">Subway Sitter</a>
+  <div class="navlinks">
+    <a href="#how">How it works</a>
+    <a href="#why">Why</a>
+    <a href="#reserve" class="btn">Reserve</a>
+  </div>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap">
+  <div>
+    <div class="eyebrow">Subway · Train · Bus · Plane</div>
+    <h1>Sit anywhere.<br>Touch nothing.</h1>
+    <p class="sub">A clean layer between you and every shared seat. Peel it on, settle in, and bin it when you go — no residue, no fuss, no second thoughts about what was there before you.</p>
+    <a href="#reserve" class="btn">Reserve your first pack</a>
+    <div class="micro"><b>Residue-free</b> adhesive &nbsp;·&nbsp; <b>Latex-free</b> &nbsp;·&nbsp; <b>Fits every seat</b></div>
+  </div>
+  <div class="hero-img"><img src="./hero.jpg" alt="A Subway Sitter draped over a New York City subway seat in warm light"></div>
+</div></header>
+
+<!-- route-line motif divider -->
+<svg class="rline" width="150" height="24" viewBox="0 0 150 24" fill="none" aria-hidden="true">
+  <path d="M8 12 q34 -16 67 0 t67 0" stroke="#8FA995" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <circle cx="8" cy="12" r="4" fill="#6E8B78"/><circle cx="75" cy="6" r="4" fill="#C48A64"/><circle cx="142" cy="12" r="4" fill="#6E8B78"/>
+</svg>
+
+<!-- RESERVE (validation fake-door) -->
+<div class="reserve" id="reserve"><div class="wrap">
+  <div class="rcard">
+    <span class="pill">Founding drop</span>
+    <h2>Reserve your 10-pack</h2>
+    <div class="price">$12 for 10 &nbsp;·&nbsp; about $1.20 a sheet</div>
+    <p class="note">We're making our first run. Reserve yours to lock the founding price and be first to get it — <b>you won't be charged today.</b></p>
+    <form class="reserve-form" id="reserveForm">
+      <input type="email" name="email" placeholder="you@email.com" required aria-label="Email">
+      <select name="expected_price" aria-label="What would feel fair to pay?">
+        <option value="">What would feel fair for a 10-pack? (optional)</option>
+        <option value="$8">$8</option>
+        <option value="$12">$12 — sounds right</option>
+        <option value="$15">$15</option>
+        <option value="$18">$18</option>
+        <option value="wouldnt">I wouldn't buy it</option>
+      </select>
+      <input type="hidden" name="offer_price" value="$12 / 10-pack">
+      <input type="hidden" name="source" value="landing-reserve">
+      <button class="btn" type="submit">Reserve mine — pay nothing now</button>
+    </form>
+    <div class="reserve-fine">No spam, no charge. We'll email you once when it's ready.</div>
+    <div class="reserve-thanks" id="reserveThanks">
+      <h3>You're on the list ✓</h3>
+      <p>Thank you — we'll be in touch the moment the founding drop is ready.</p>
+    </div>
+  </div>
+</div></div>
+
+<!-- HOW -->
+<section class="pad" id="how"><div class="wrap center">
+  <div class="eyebrow">How it works</div>
+  <h2 class="title" style="margin-top:12px">Five seconds, then forget about it</h2>
+  <p class="lead">No straps, no fuss. A mild, residue-free adhesive holds it right to the seat.</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Peel</h3><p>Unfold from its slim pouch and peel the backing.</p></div>
+    <div class="step"><div class="n">2</div><h3>Stick</h3><p>Press the top to the seatback, base to the seat.</p></div>
+    <div class="step"><div class="n">3</div><h3>Sit</h3><p>Settle in for the ride — then peel away clean when you go, no residue.</p></div>
+  </div>
+</div></section>
+
+<!-- WHY / split -->
+<section class="pad" id="why" style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap split">
+  <div><img src="./flatlay.jpg" alt="The Subway Sitter pouch and folded sheet with eucalyptus on warm linen"></div>
+  <div>
+    <div class="eyebrow">Why it exists</div>
+    <h2 style="margin-top:12px">You don't get to choose the seat.<br>You can choose what you sit on.</h2>
+    <div class="feat"><div class="dot"></div><div><h4>A soft barrier, not a compromise</h4><p>Lightweight nonwoven fabric — quiet, breathable, and kind to your clothes.</p></div></div>
+    <div class="feat"><div class="dot"></div><div><h4>Leaves nothing behind</h4><p>A low-tack, residue-free adhesive holds firm, then lifts clean off any seat.</p></div></div>
+    <div class="feat"><div class="dot"></div><div><h4>One that fits everywhere</h4><p>Plastic, vinyl, fabric — subway, bus, rail and plane. Slip a few in your bag.</p></div></div>
+  </div>
+</div></section>
+
+<!-- VALUES -->
+<div class="values"><div class="wrap">
+  <span>Residue-free</span><span>Latex-free</span><span>Recyclable carton</span><span>Made for the daily commute &amp; the long haul</span>
+</div></div>
+
+<!-- FAQ -->
+<section class="pad"><div class="wrap">
+  <h2 class="title center" style="margin-bottom:36px">Good to know</h2>
+  <div class="faq">
+    <details><summary>What is it made of?</summary><p>A soft, lightweight nonwoven fabric (the same family used for surgical drapes), with a mild, residue-free adhesive on the edges. Latex-free.</p></details>
+    <details><summary>Will it leave marks on the seat?</summary><p>No. The adhesive is low-tack and repositionable — it holds through your ride and peels away clean, leaving nothing behind.</p></details>
+    <details><summary>Does it really fit every seat?</summary><p>It's one continuous sheet that covers the seatback and the seat, and the adhesive grips hard plastic, vinyl and fabric alike.</p></details>
+    <details><summary>When can I get it?</summary><p>We're finishing our first production run. Reserve above to lock the founding price and we'll email you the moment it ships.</p></details>
+  </div>
+</div></section>
+
+<!-- CTA band -->
+<div class="reserve"><div class="wrap center" style="padding:64px 26px">
+  <h2 class="title">Ride clean.</h2>
+  <p class="lead">Reserve your founding 10-pack — pay nothing today.</p>
+  <a href="#reserve" class="btn">Reserve your first pack</a>
+</div></div>
+
+<footer><div class="wrap">
+  <div class="logo" style="font-size:19px">Subway Sitter</div>
+  <div>Sit anywhere. Touch nothing.</div>
+  <div>© 2026 Subway Sitter</div>
+</div>
+<div class="note">Pre-launch concept page for demand testing. Product imagery is illustrative; specifications subject to change.</div>
+</footer>
+
+<script>
+  // Fake-door reserve capture. Wire FORM_ENDPOINT to a free Formspree form (formspree.io) to collect emails.
+  var FORM_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_ID";
+  var form = document.getElementById('reserveForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    function done(){ form.style.display='none'; document.getElementById('reserveThanks').style.display='block'; }
+    if (FORM_ENDPOINT.indexOf('REPLACE_WITH_YOUR_ID') !== -1){ done(); return; } // demo mode until endpoint set
+    fetch(FORM_ENDPOINT, { method:'POST', body:data, headers:{'Accept':'application/json'} })
+      .then(function(){ done(); }).catch(function(){ done(); });
+  });
+</script>
+</body>
+</html>
